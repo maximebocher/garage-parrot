@@ -177,7 +177,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
 </div>
 <?php endforeach ?>
 </section>
-<a href="./Addoccasion.php"class="btn btn-success"> poster une annonce</a>
+<?php if (isset($_SESSION["user"])){
+    if($_SESSION["user"]["role"] == "admin" || ($_SESSION["user"]["role"] == "employe")){
+        echo '<a href="./Addoccasion.php"class="btn btn-success">poster une annonce</a>';
+            }
+}
+?>
+
 </main>
 <?php include_once("footer.php"); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>

@@ -12,11 +12,21 @@
     <span class="navbar-text" style = "font-weight : bold" >
         <h1 class="display-3">GARAGE V.PARROT</h1>
     </span>
+    <?php session_start();?>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-            <a class="nav-link" href="./index.php" id="accueil">Accueil</a>
+            <a class="nav-link" href=<?php
+            if(isset ($_SESSION["user"]["role"])){
+                if($_SESSION["user"]["role"] == "admin"){
+                    echo "./IndexAdmin.php";
+                }else{
+                echo "./index.php";
+                }
+            }else{
+            echo "./index.php";
+            } ?> id="accueil">Accueil</a>
         </li>
     
         <li class="nav-item">
@@ -30,7 +40,7 @@
         </li>
     </ul>
     <?php 
-    session_start();
+    
     if(isset($_SESSION["user"]))
     {
         echo "<form action=\"Login.php\"><button onclick=\"disconnect()\">Se deconnecter </button></form>";
@@ -42,6 +52,9 @@
         echo $_SESSION["user"]["role"];
     }else{
         include_once("Login-form.php");
+    }
+    if (isset($_GET["me"])){
+        echo "<p>le mot de passe est incorrect</p>";
     }
     function disconnect(){
         $_SESSION["user"] =null;

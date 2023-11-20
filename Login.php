@@ -9,14 +9,21 @@ $password = $_POST['password']; // Adresse e-mail fournie dans le formulaire
 $data=$manager->login($email , $password);
 if(is_array($data)){
     $login= new Login($data);
+    if ($login->getRole()=="admin"){
+        header("Location: ./IndexAdmin.php");
+    }else{
+        header("Location: ./index.php");
+    }
 }else {
     echo "identifiant incorrect";
+    header("Location: ./index.php?me=1");
 }
 }
 else {
     $_SESSION["user"]= null;
+    header("Location: ./index.php");
 }
-header("Location: ./index.php");
+
 
 class Login {
     private $id;

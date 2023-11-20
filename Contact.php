@@ -65,7 +65,13 @@
                                         </ul>
                                     </div>
                                 </div> 
-                    </div>   
+                    </div> 
+                    <?php if (isset($_SESSION["user"])){
+                    if($_SESSION["user"]["role"] == "admin" || ($_SESSION["user"]["role"] == "employe")){
+                    echo '<a href="./traitement-formulaire-contact.php"class="btn btn-success">voir les demandes de contact</a>';
+                    }
+                    }
+                    ?>
 
 
 

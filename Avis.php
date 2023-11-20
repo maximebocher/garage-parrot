@@ -65,7 +65,12 @@
             ?>
     </form>
 </div>
-
+<?php if (isset($_SESSION["user"])){
+if($_SESSION["user"]["role"] == "admin" || ($_SESSION["user"]["role"] == "employe")){
+echo '<a href="./Aviswaitapprouv.php"class="btn btn-success">moderer les commentaires</a>';
+}
+}
+?>
 
 
 <?php include_once("myslide.php"); ?>
