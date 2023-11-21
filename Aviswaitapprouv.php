@@ -10,7 +10,7 @@
 
     <title>Garage V.Parrot</title>
 </head>
-<?php include_once("header.php"); ?>
+<?php include_once("Header.php"); ?>
 <?php include_once("Garage_StatusManager.php");?>
 <body style="background-color: #EAEAEA";>
 <?php require("./OpinionManager.php");?>
@@ -95,6 +95,6 @@
 <?php include_once("myslide.php"); ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
 </body>
-<?php include_once("footer.php"); ?>
+<?php include_once("Footer.php"); ?>
 
 </html>

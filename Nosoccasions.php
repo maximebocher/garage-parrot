@@ -56,15 +56,15 @@
     <option value="4">de 100 000 km à 150 000 km</option>
     <option value="5">plus de 150 000 km</option>
     </select>
-<label for="year"> trié par année de mise en circulation</label>
+    <label for="year"> trié par année de mise en circulation</label>
     <select id="year">
     <option value="">--</option>
-    <option value="avant_2000">avant 2000</option>
-    <option value="de_2000_à_2005">de 2000 à 2005</option>
-    <option value="de_2005_à_2010">de 2005 à 2010</option>
-    <option value="de_2010_à_2015">de 2010 à 2015</option>
-    <option value="de_2015_à_2020">de 2015 à 2020</option>
-    <option value="après_2020">après 2020</option> 
+    <option value="1">avant 2000</option>
+    <option value="2">de 2000 à 2005</option>
+    <option value="3">de 2005 à 2010</option>
+    <option value="4">de 2010 à 2015</option>
+    <option value="5">de 2015 à 2020</option>
+    <option value="6">après 2020</option> 
     </select>
     <button type="submit" class="btn btn-success" id="filter">Filtrer</button>
 </div>
@@ -76,7 +76,8 @@ $(document).ready(function() {
         var prixMaxInput = $("#prix-max").val();
         var kmMin = -1;
         var kmMax = -1;
-    
+        var yearMin = -1;
+        var yearMax = -1;
         switch ($("#km").val()) {
             case "1":
                 kmMin = 0;
@@ -99,19 +100,45 @@ $(document).ready(function() {
                 kmMax = 9999999;
                 break;
             }
-        var year = $("#year").val();
+
+            switch ($("#year").val()) {
+            case "1":
+                yearMin = 0;
+                yearMax = 2000;
+                break;
+            case "2":
+                yearMin = 2000;
+                yearMax = 2005;
+                break;
+            case "3":
+                yearMin = 2005;
+                yearMax = 2010;
+                break;
+            case "4":
+                yearMin = 2010;
+                yearMax = 2015;
+                break;
+            case "5":
+                yearMin = 2015;
+                yearMax = 2020;
+                break;
+            case "6":
+                yearMin = 2020;
+                yearMax = 9999999;
+                break;
+            }
         $.ajax({
-    type: "POST",
-    url: "postfiltercar.php",
-    data: { prixMinInput: prixMinInput, prixMaxInput: prixMaxInput, kmMin: kmMin,kmMax: kmMax, year: year },
-    success: function(data) {
-       
-        $('#container').html(data);
-    }
-});
-});
+            type: "POST",
+            url: "postfiltercar.php",
+            data: { prixMinInput: prixMinInput, prixMaxInput: prixMaxInput, kmMin: kmMin,kmMax: kmMax, yearMin: yearMin,yearMax: yearMax },
+            success: function(data) {
+                $('#container').html(data);
+            }
+        });
+    });
 });
 </script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     // Récupérez les éléments du DOM

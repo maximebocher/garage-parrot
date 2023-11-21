@@ -4,7 +4,6 @@ $manager = new CarManager();
 if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $prixMininput = -1;
     $prixMaxinput = -1;
-    $year = 0;
     $kmMin = 0;
     $kmMax = 0;
     $yearMin = 0;
