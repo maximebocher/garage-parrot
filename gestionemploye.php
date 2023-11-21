@@ -16,7 +16,7 @@
 <?php include_once("myslide.php"); ?>
 <?php include_once("OpinionManager.php")?>
 <?php include_once("Garage_StatusManager.php");?>
-<?php require("./LoginManager.php");?>
+<?php require_once("./LoginManager.php");?>
 <?php
 if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $loginManager = new LoginManager();
@@ -31,22 +31,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
             <form action="gestionemploye.php" method="post" class="p-4 border rounded shadow">
                 <div class="mb-3">
                     <label for="name"class="form-label">Nom :</label>
-                    <input type="text" id="name" name="name" required><br>
+                    <input type="text" id="name" name="name" require_onced><br>
                 </div>
 
                 <div class="mb-3">
                     <label for="forename" class="form-label">Prénom :</label>
-                    <input type="text" id="forename" name="forename" required><br>
+                    <input type="text" id="forename" name="forename" require_onced><br>
                 </div>
 
                 <div class="mb-3">
                     <label for="email" class="class form-label">Adresse e-mail :</label>
-                    <input type="email" id="email" name="email" required><br>
+                    <input type="email" id="email" name="email" require_onced><br>
                 </div>
 
                 <div class="mb-3">
                     <label for="password" class="form-label">Mot de passe :</label>
-                    <input type="password" id="password" name="password" required><br>
+                    <input type="password" id="password" name="password" require_onced><br>
                 </div>
 
                 <div class="mb-3">

@@ -1,26 +1,28 @@
 <?php
 
+require_once("./config.php");
 //session_start();
 class LoginManager {
     private $db;
+    private $managerbdd;
     public function __construct() {
-        $dbName = "garage-parot";
-        $port = 3306;
-        $username = "neva";
-        $password = "neva";
+        $this->managerbdd = new BDDManager();
+        $dbName = $this->managerbdd->getdbName();
+        $port = $this->managerbdd->getPort();
+        $username = $this->managerbdd->getUserName();
+        $password = $this->managerbdd->getPassword();
+        $url = $this->managerbdd->getUrl();
         try{
-            $this->db = new PDO("mysql:localhost;dbname=$dbName;port=$port", $username, $password);
+            $this->db = new PDO("mysql:$url;dbname=$dbName;port=$port", $username, $password);
         } catch(PDOException $exception) {
             echo $exception->getMessage();
-        };
-        
-        
+        }
     }
     
     public function login($email , $password)
 {
     
-    $sql = "SELECT id, email, password, role FROM `garage-parot`.users WHERE email = :email "; 
+    $sql = "SELECT id, email, password, role FROM `".$this->managerbdd->getdbName()."`.users WHERE email = :email "; 
     $req = $this->db->prepare($sql);
     $req->bindValue(':email', $email, PDO::PARAM_STR);
     if ($req->execute()) {
@@ -42,7 +44,7 @@ class LoginManager {
     }
 }
 public function createEmploye (string $name,string $forename,string $email,string $password,string $role){
-    $req = $this->db->prepare("INSERT INTO `garage-parot`.`users` (name, forename, email, password, role) VALUE (:name, :forename, :email, :password, :role)");
+    $req = $this->db->prepare("INSERT INTO `".$this->managerbdd->getdbName()."`.`users` (name, forename, email, password, role) VALUE (:name, :forename, :email, :password, :role)");
     $req->bindValue(":name", $name, PDO::PARAM_STR);
     $req->bindValue(":forename", $forename, PDO::PARAM_STR);
     $req->bindValue(":email", $email, PDO::PARAM_STR);

@@ -1,7 +1,7 @@
 <!-- Remove the container if you want to extend the Footer to full width. -->
 <div class="container my-5">
 
-  <footer class="text-white text-center text-lg-start" style="background-color: #23242a;">
+  <Footer class="text-white text-center text-lg-start" style="background-color: #23242a;">
     <!-- Grid container -->
     <div class="container p-4">
       <!--Grid row-->
@@ -81,6 +81,6 @@
     <!-- Grid container -->
     
 
-  </footer>
+  </Footer>
   
 <!-- End of .container -->

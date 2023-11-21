@@ -12,10 +12,10 @@
 <body style="background-color: #EAEAEA";>
     <?php
     require_once("./FormContactManager.php");
-    require_once("./Carmanager.php");
-    $carmanager=new CarManager();
-    $car=$carmanager->get($_GET["carId"]);
-    $datapicture=$carmanager->getAllByPicture($car ->GETid());
+    require_once("./CarManager.php");
+    $CarManager=new CarManager();
+    $car=$CarManager->get($_GET["carId"]);
+    $datapicture=$CarManager->getAllByPicture($car ->GETid());
     ?>
 
     <div class="container">
@@ -67,19 +67,19 @@
                         <div class="col-md-6">
                             <form action="ShowCar1.php?carId=<?php echo $_GET["carId"]?>" method="post">
                                 <label for="name" class="form-label" >Nom :</label>
-                                <input type="text" class="form-control" id="name" name="name" required><br>
+                                <input type="text" class="form-control" id="name" name="name" require_onced><br>
 
                                 <label for="surname" class="form-label">Prénom :</label>
-                                <input type="text" class="form-control" id="surname" name="surname" required><br>
+                                <input type="text" class="form-control" id="surname" name="surname" require_onced><br>
 
                                 <label for="email" class="form-label">Adresse e-mail :</label>
-                                <input type="email" class="form-control" id="email" name="email" required><br>
+                                <input type="email" class="form-control" id="email" name="email" require_onced><br>
 
                                 <label for="phone" class="form-label">Numéro de téléphone :</label>
-                                <input type="tel" class="form-control" id="phone" name="phone" required><br>
+                                <input type="tel" class="form-control" id="phone" name="phone" require_onced><br>
 
                                 <label for="message" class="form-label">Message :</label>
-                                <textarea id="message" class="form-control" name="message" required>Bonjour, Je vous contact par rapport à l'annonce de :  <?php echo $car->getName()." ".$car->getType()?> </textarea><br>
+                                <textarea id="message" class="form-control" name="message" require_onced>Bonjour, Je vous contact par rapport à l'annonce de :  <?php echo $car->getName()." ".$car->getType()?> </textarea><br>
 
                                 <button type="submit" class="btn btn-primary">Envoyer</button>
                             </div>

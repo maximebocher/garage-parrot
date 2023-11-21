@@ -1,25 +1,29 @@
 <?php
 
-require("./Opinion.php");
+require_once("./Opinion.php");
+require_once("./config.php");
 
 class OpinionManager {
     private $db;
-    public function __construct() {
-$dbName = "garage-parot";
-$port = 3306;
-$username = "neva";
-$password = "neva";
+    private $managerbdd;
 
-try {
-    $this->db = new PDO("mysql:host=localhost;dbname=$dbName;port=$port", $username, $password);
-} catch (PDOException $e) {
-    echo "Erreur de connexion à la base de données : " . $e->getMessage();
-}
-}
+    public function __construct() {
+        $this->managerbdd = new BDDManager();
+        $dbName = $this->managerbdd->getdbName();
+        $port = $this->managerbdd->getPort();
+        $username = $this->managerbdd->getUserName();
+        $password = $this->managerbdd->getPassword();
+        $url = $this->managerbdd->getUrl();
+        try{
+            $this->db = new PDO("mysql:$url;dbname=$dbName;port=$port", $username, $password);
+        } catch(PDOException $exception) {
+            echo $exception->getMessage();
+        }
+    }
 
 
 public function create (Opinion $opinion){
-    $req = $this->db->prepare("INSERT INTO `garage-parot` . `opinions` (name, comment, rating) VALUES (:name, :comment, :rating)");
+    $req = $this->db->prepare("INSERT INTO `".$this->managerbdd->getdbName()."` . `opinions` (name, comment, rating) VALUES (:name, :comment, :rating)");
     $req->bindValue(":name", $opinion->getName(), PDO::PARAM_STR);
     $req->bindValue(":comment", $opinion->getComment(), PDO::PARAM_STR);
     $req->bindValue(":rating", $opinion->getRating(), PDO::PARAM_INT);
@@ -34,7 +38,7 @@ if ($req->execute()) {
 }
 public function getAll(){
     $opinion = [];
-    $req = $this->db->query("SELECT * FROM `opinions`");
+    $req = $this->db->query("SELECT * FROM `".$this->managerbdd->getdbName()."`.`opinions`");
     $datas = $req->fetchAll();
     foreach ($datas as $data) {
         $opinion = new Opinion($data);
@@ -43,7 +47,7 @@ public function getAll(){
     return $opinions;
 }
 public function update(int $id, bool $approved){
-    $req = $this->db->prepare("UPDATE opinions SET approved = :approved WHERE id = :id");
+    $req = $this->db->prepare("UPDATE `".$this->managerbdd->getdbName()."`.`opinions` SET approved = :approved WHERE id = :id");
 
     $req->bindValue(":id", $id, PDO::PARAM_INT);
     $req->bindValue(":approved", $approved, PDO::PARAM_BOOL);
@@ -51,7 +55,7 @@ public function update(int $id, bool $approved){
 }
 public function getAllApproved(){
     $opinion = [];
-    $req = $this->db->query("SELECT * FROM `opinions` WHERE approved = 1;");
+    $req = $this->db->query("SELECT * FROM `".$this->managerbdd->getdbName()."`.`opinions` WHERE approved = 1;");
     $datas = $req->fetchAll();
     foreach ($datas as $data) {
         $opinion = new Opinion($data);

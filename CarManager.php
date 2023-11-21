@@ -1,23 +1,27 @@
 <?php
 
-require("./Car.php");
+require_once("./Car.php");
+require_once("./config.php");
 
 class CarManager {
     private $db;
+    private $managerbdd;
     public function __construct() {
-        $dbName = "garage-parot";
-        $port = 3306;
-        $username = "neva";
-        $password = "neva";
+        $this->managerbdd = new BDDManager();
+        $dbName = $this->managerbdd->getdbName();
+        $port = $this->managerbdd->getPort();
+        $username = $this->managerbdd->getUserName();
+        $password = $this->managerbdd->getPassword();
+        $url = $this->managerbdd->getUrl();
         try{
-            $this->db = new PDO("mysql:localhost;dbname=$dbName;port=$port", $username, $password);
+            $this->db = new PDO("mysql:$url;dbname=$dbName;port=$port", $username, $password);
         } catch(PDOException $exception) {
             echo $exception->getMessage();
         }
     }
 
     public function create (Car $car){
-        $req = $this->db->prepare("INSERT INTO `garage-parot`.`car` (name, type, year, price, km, description) VALUE (:name, :type, :year, :price, :km, :description)");
+        $req = $this->db->prepare("INSERT INTO `".$this->managerbdd->getdbName()."`.`car` (name, type, year, price, km, description) VALUE (:name, :type, :year, :price, :km, :description)");
         $req->bindValue(":name", $car->getName(), PDO::PARAM_STR);
         $req->bindValue(":type", $car->getType(), PDO::PARAM_STR);
         $req->bindValue(":year", $car->getYear(), PDO::PARAM_INT);
@@ -34,14 +38,14 @@ class CarManager {
     }
 
     public function createPicture (string $image_path, int $carId){
-        $req = $this->db->prepare("INSERT INTO `garage-parot`.`pictures`(car_Id, image_path) VALUE (:car_id, :image_path) ");
+        $req = $this->db->prepare("INSERT INTO `".$this->managerbdd->getdbName()."`.`pictures`(car_Id, image_path) VALUE (:car_id, :image_path) ");
         $req->bindvalue("car_id", $carId, PDO::PARAM_INT);
         $req->bindvalue("image_path", $image_path, PDO::PARAM_STR);
         $req->execute();
     }
 
     public function get(int $id){
-        $req = $this->db->prepare("SELECT * FROM `garage-parot`.`car` WHERE id= :id");
+        $req = $this->db->prepare("SELECT * FROM `".$this->managerbdd->getdbName()."`.`car` WHERE id= :id");
         $req->bindValue(":id", $id, PDO::PARAM_INT);
         $req->execute();
         $datas = $req->fetch();
@@ -51,7 +55,7 @@ class CarManager {
 
     public function getAll(){
         $cars = [];
-        $req = $this->db->query("SELECT c.`id`, `name`, `type`, `year`,`price`, `km`, `image_path` AS `picture`  FROM `garage-parot`.`car` c LEFT JOIN `garage-parot`.`pictures` p ON c.id = p.car_id GROUP BY c.id ORDER BY name");
+        $req = $this->db->query("SELECT c.`id`, `name`, `type`, `year`,`price`, `km`, `image_path` AS `picture`  FROM `".$this->managerbdd->getdbName()."`.`car` c LEFT JOIN `".$this->managerbdd->getdbName()."`.`pictures` p ON c.id = p.car_id GROUP BY c.id ORDER BY name");
         $datas = $req->fetchAll();
         foreach ($datas as $data) {
             $car = new Car($data);
@@ -107,7 +111,7 @@ class CarManager {
     }
 
     public function getAllByPicture(int $id){
-        $req = $this->db->query("SELECT * FROM `garage-parot`.`pictures` WHERE car_id = ".$id.";");
+        $req = $this->db->query("SELECT * FROM `".$this->managerbdd->getdbName()."`.`pictures` WHERE car_id = ".$id.";");
     //$req->bindValue(":car_id", $id, PDO::PARAM_INT);
     $req->execute();
     $datas = $req->fetchAll();
@@ -115,12 +119,35 @@ class CarManager {
         
         return $datas;
     }
-    public function getAllfilter(INT $prixMininput,INT $prixMaxinput){
+    public function getAllfilter(INT $prixMinInput,INT $prixMaxInput,INT $kmMin,INT $kmMax,INT $yearMin,INT $yearMax){
         $cars = [];
-        $sql = "SELECT c.`id`, `name`, `type`, `year`,`price`, `km`, `image_path` AS `picture`  FROM `garage-parot`.`car` c LEFT JOIN `garage-parot`.`pictures` p ON c.id = p.car_id WHERE 1=1";
-        if ($prixMininput>-1){
-            $sql = $sql." AND price>".$prixMininput;
+        $sql = "SELECT c.`id`, `name`, `type`, `year`,`price`, `km`, `image_path` AS `picture`  FROM `".$this->managerbdd->getdbName()."`.`car` c LEFT JOIN `".$this->managerbdd->getdbName()."`.`pictures` p ON c.id = p.car_id WHERE 1=1";
+        
+        if ($prixMinInput > -1){
+            $sql = $sql." AND price>=".$prixMinInput;
         }
+
+        if ($prixMaxInput > -1){
+            $sql = $sql." AND price<=".$prixMaxInput;
+        }
+
+        if ( $kmMin > -1){
+            $sql = $sql." AND km>=". $kmMin;
+        }
+
+        if ($kmMax > -1){
+            $sql = $sql." AND km<=".$kmMax;
+        }
+        
+        if ( $yearMin > -1){
+            $sql = $sql." AND year>=". $yearMin;
+        }
+
+        if ($yearMax > -1){
+            $sql = $sql." AND year<=".$yearMax;
+        }
+
+
         $sql = $sql." GROUP BY c.id ORDER BY name";
         $req = $this->db->query($sql);
         $datas = $req->fetchAll();
@@ -128,6 +155,11 @@ class CarManager {
             $car = new Car($data);
             $cars[] = $car;
         }
+
         return $cars;
+    
+
+
+   
     }
 }

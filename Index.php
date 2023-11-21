@@ -66,11 +66,11 @@
 
 <?php include_once("Footer.php"); ?>
 <?php 
-    require("./CarManager.php");
+    require_once("./CarManager.php");
     $manager = new CarManager();
     $cars = $manager->getAll();
-    require("./LoginManager.php");
-    require("./OpinionManager.php");
+    require_once("./LoginManager.php");
+   /* require_once("./OpinionManager.php");*/
     $manager = new OpinionManager();
     
 

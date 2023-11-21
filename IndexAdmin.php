@@ -26,11 +26,11 @@
         <form action="IndexAdmin.php" method="post">
             <div class="mb-3">
                 <label for="name" class="form-label">Nom du service :</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <input type="text" class="form-control" id="name" name="name" require_onced>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description du service :</label>
-                <textarea class="form-control" id="description" name="description" required></textarea>
+                <textarea class="form-control" id="description" name="description" require_onced></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Ajouter le service</button>
             <?php 
@@ -128,11 +128,11 @@
 <a href="./gestionemploye.php" class="btn btn-primary">vers creation employé</a>
 <?php include_once("Footer.php"); ?>
 <?php 
-    require("./CarManager.php");
+    require_once("./CarManager.php");
     $manager = new CarManager();
     $cars = $manager->getAll();
-    require("./LoginManager.php");
-    require("./OpinionManager.php");
+    require_once("./LoginManager.php");
+    require_once("./OpinionManager.php");
     $manager = new OpinionManager();
     
 

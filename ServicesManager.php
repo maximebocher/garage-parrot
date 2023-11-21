@@ -1,23 +1,26 @@
 <?php
 
-require("./Services.php");
-
+require_once("./Services.php");
+require_once("./config.php");
 class ServicesManager {
     private $db;
+    private $managerbdd;
     public function __construct() {
-        $dbName = "garage-parot";
-        $port = 3306;
-        $username = "neva";
-        $password = "neva";
+        $this->managerbdd = new BDDManager();
+        $dbName = $this->managerbdd->getdbName();
+        $port = $this->managerbdd->getPort();
+        $username = $this->managerbdd->getUserName();
+        $password = $this->managerbdd->getPassword();
+        $url = $this->managerbdd->getUrl();
         try{
-            $this->db = new PDO("mysql:localhost;dbname=$dbName;port=$port", $username, $password);
+            $this->db = new PDO("mysql:$url;dbname=$dbName;port=$port", $username, $password);
         } catch(PDOException $exception) {
             echo $exception->getMessage();
         }
     }
 
 public function AddServices(Services $services){
-    $req = $this->db->prepare("INSERT INTO `garage-parot`.`services` (name, description) VALUE (:name, :description)");
+    $req = $this->db->prepare("INSERT INTO `".$this->managerbdd->getdbName()."`.`services` (name, description) VALUE (:name, :description)");
     $req->bindValue(":name", $services->getName(), PDO::PARAM_STR);
     $req->bindValue(":description", $services->getDescription(), PDO::PARAM_STR);
     if ($req->execute()) {
@@ -28,7 +31,7 @@ public function AddServices(Services $services){
 }
 public function getAllServices(){
     $services = [];
-    $req = $this->db->query("SELECT `id`,`name`,`description`FROM `garage-parot`.`services`"); 
+    $req = $this->db->query("SELECT `id`,`name`,`description`FROM `".$this->managerbdd->getdbName()."`.`services`"); 
     $datas = $req->fetchAll();
     foreach ($datas as $data) {
         $service = new Services($data);
@@ -38,7 +41,7 @@ public function getAllServices(){
 }
 public function deleteService(int $id){
 
-    $req = $this->db->prepare("DELETE FROM `garage-parot`.`services` WHERE id = :id");
+    $req = $this->db->prepare("DELETE FROM `".$this->managerbdd->getdbName()."`.`services` WHERE id = :id");
     $req->bindValue(":id", $id, PDO::PARAM_INT);
 
     $req->execute();

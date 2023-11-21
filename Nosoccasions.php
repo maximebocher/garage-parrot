@@ -27,30 +27,22 @@
 
     <title>Garage V.Parrot</title>
 </head>
-<?php include_once("header.php"); ?>
+<?php include_once("Header.php"); ?>
 <body style="background-color: #EAEAEA";>
 <?php include_once("myslide.php"); ?>
 <?php include_once("Garage_StatusManager.php");?>
 
 <?php 
-    require("./CarManager.php");
+    require_once("./CarManager.php");
     $manager = new CarManager();
     $cars = $manager->getAll();
 ?>
 <div>
-<label for="price"> trié par prix</label>
-    <select id="price">
-    <option value="0">--</option>
-    <option value="1">moins de 5000€</option>
-    <option value="2">de 5000€ à 10000€</option>
-    <option value="de 10 000€ à 15 000€">de 10000€ à 15000€</option>
-    <option value="de 15 000€ à 20 000€">de 15000€ à 20000€</option>
-    <option value="plus de 20 000€">plus de 20 000€</option>
-    </select>
+    <p>trier par prix</P>
     <div id="prix-range-container">
         <input type="range" id="prix-min" min="0" max="100000" step="1000" value="20000">
         <input type="range" id="prix-max" min="0" max="100000" step="1000" value="80000">
-        <div id="prix-values">
+        <div id="prix-values" style="width:200px">
             <span id="prix-min-value"></span>
             <span id="prix-max-value"></span>
         </div>
@@ -58,11 +50,11 @@
 <label for="km"> trié par kilometrage</label>
     <select id="km">
     <option value="">--</option>
-    <option value="moins de 20 000 km">moins de 20 000 km</option>
-    <option value="de 20 000 km à 50 000 km">de 20 000 km à 50 000 km</option>
-    <option value="de 50 000 km à 100 000 km">de 50 000 km à 100 000 km</option>
-    <option value="de 100 000 km à 150 000 km">de 100 000 km à 150 000 km</option>
-    <option value="plus de 150 000 km">plus de 150 000 km</option>
+    <option value="1">moins de 20 000 km</option>
+    <option value="2">de 20 000 km à 50 000 km</option>
+    <option value="3">de 50 000 km à 100 000 km</option>
+    <option value="4">de 100 000 km à 150 000 km</option>
+    <option value="5">plus de 150 000 km</option>
     </select>
 <label for="year"> trié par année de mise en circulation</label>
     <select id="year">
@@ -82,16 +74,38 @@ $(document).ready(function() {
     $("#filter").click(function() {
         var prixMinInput = $("#prix-min").val();
         var prixMaxInput = $("#prix-max").val();
-        console.log(prixMinInput);
-        var km = $("#km").val();
+        var kmMin = -1;
+        var kmMax = -1;
+    
+        switch ($("#km").val()) {
+            case "1":
+                kmMin = 0;
+                kmMax = 20000;
+                break;
+            case "2":
+                kmMin = 20000;
+                kmMax = 50000;
+                break;
+            case "3":
+                kmMin = 50000;
+                kmMax = 100000;
+                break;
+            case "4":
+                kmMin = 100000;
+                kmMax = 150000;
+                break;
+            case "5":
+                kmMin = 150000;
+                kmMax = 9999999;
+                break;
+            }
         var year = $("#year").val();
         $.ajax({
     type: "POST",
     url: "postfiltercar.php",
-    data: { prixMinInput: prixMinInput, prixMaxInput: prixMaxInput, km: km, year: year },
+    data: { prixMinInput: prixMinInput, prixMaxInput: prixMaxInput, kmMin: kmMin,kmMax: kmMax, year: year },
     success: function(data) {
-        
-        console.log(data);
+       
         $('#container').html(data);
     }
 });
@@ -136,43 +150,43 @@ $(document).ready(function() {
 });
 </script>
 
-<?php
-if ($_SERVER["REQUEST_METHOD"] === "POST"){
-    $prixMininput = -1;
-    $prixMaxinput = -1;
-    $year = 0;
-    $Km = 0;
-    if (isset($_POST["prixMininput"])){
-        $prixMininput = $_POST['prixMininput'];
-    }
-    if (isset($_POST["prixMaxinput"])){
-        $prixMaxinput = $_POST['prixMaxinput'];
-    }
-    $cars = $manager->getAllfilter($prixMininput,$prixMaxinput);
-    echo json_encode($cars);
-    // //*if (isset($_POST["year"])){
-    //     $year = $_POST['year'];
-    // }
-    // if (isset($_POST["Km"])){
-    //     $Km = $_POST['Km'];
-    // }
-}
+<!-- <?php
+// if ($_SERVER["REQUEST_METHOD"] === "POST"){
+//     $prixMininput = -1;
+//     $prixMaxinput = -1;
+//     $year = 0;
+//     $Km = 0;
+//     if (isset($_POST["prixMininput"])){
+//         $prixMininput = $_POST['prixMininput'];
+//     }
+//     if (isset($_POST["prixMaxinput"])){
+//         $prixMaxinput = $_POST['prixMaxinput'];
+//     }
+//     $cars = $manager->getAllfilter($prixMininput,$prixMaxinput);
+//     echo json_encode($cars);
+//     // //*if (isset($_POST["year"])){
+//     //     $year = $_POST['year'];
+//     // }
+//     // if (isset($_POST["Km"])){
+//     //     $Km = $_POST['Km'];
+//     // }
+// }
 
 
-?>
+?> -->
 
 
 
 
 <main class="container">
-<section class ="d-flex flex-wrap justify-content-center">
+<section  id="container" class ="d-flex flex-wrap justify-content-center">
 <?php foreach ($cars as $car): ?>
 <div class="card m-5" style="width: 18rem;">
     <img class="card-img-top" src="<?php echo "./image/car-pictures/",$car->getId(). "/" . $car->getPicture() ?>">
     <div class="card-body">
     <h5 class="card-title"><?php echo $car->getName() ?>- <?php echo $car->getType() ?></h5>
     <p class="card-text"><?php echo $car->getPrice() ?>€-<?php echo $car->getKm() ?>km-<?php echo $car->getYear() ?></p>
-    <a href= "<?php echo "ShowCAR1.php?carId=". $car->getId()?>" class="btn btn-danger">Voir</a>
+    <a href= "<?php echo "ShowCar1.php?carId=". $car->getId()?>" class="btn btn-danger">Voir</a>
     </div>
 </div>
 <?php endforeach ?>
@@ -185,7 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
 ?>
 
 </main>
-<?php include_once("footer.php"); ?>
+<?php include_once("Footer.php"); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </body>

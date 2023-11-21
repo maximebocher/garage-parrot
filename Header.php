@@ -2,7 +2,7 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #df5b5b;">
     <div class="container-fluid">
-    <a class="navbar-brand" href="./index.php">
+    <a class="navbar-brand" href="./Index.php">
     <img src="./image/logogarage1.png" width="100" alt="logo garage V.parot">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,8 +12,10 @@
     <span class="navbar-text" style = "font-weight : bold" >
         <h1 class="display-3">GARAGE V.PARROT</h1>
     </span>
-    <?php session_start();?>
-
+    <?php 
+        session_start();
+    ?>
+ 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
@@ -22,10 +24,10 @@
                 if($_SESSION["user"]["role"] == "admin"){
                     echo "./IndexAdmin.php";
                 }else{
-                echo "./index.php";
+                echo "./Index.php";
                 }
             }else{
-            echo "./index.php";
+            echo "./Index.php";
             } ?> id="accueil">Accueil</a>
         </li>
     
@@ -71,7 +73,7 @@
     let currentPage = window.location.href;
     
     // Vérifier si la page actuelle correspond à une page du menu
-    if (currentPage.includes("index.php")) {
+    if (currentPage.includes("Index.php")) {
         document.getElementById("accueil").classList.add("active");
     } else if (currentPage.includes("Services.php")) {
         document.getElementById("services").classList.add("active");

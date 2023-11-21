@@ -1,7 +1,7 @@
 
 <?php
 session_start();
-require("./LoginManager.php");
+require_once("./LoginManager.php");
 if(isset($_POST["email"])) {
 $manager = new LoginManager();
 $email = $_POST['email']; // Adresse e-mail fournie dans le formulaire
@@ -12,16 +12,16 @@ if(is_array($data)){
     if ($login->getRole()=="admin"){
         header("Location: ./IndexAdmin.php");
     }else{
-        header("Location: ./index.php");
+        header("Location: ./Index.php");
     }
 }else {
     echo "identifiant incorrect";
-    header("Location: ./index.php?me=1");
+    header("Location: ./Index.php?me=1");
 }
 }
 else {
     $_SESSION["user"]= null;
-    header("Location: ./index.php");
+    header("Location: ./Index.php");
 }
 
 

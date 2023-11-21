@@ -1,23 +1,27 @@
 <?php
 
-require("./FormContact.php");
+require_once("./FormContact.php");
+require_once("./config.php");
 
 class FormContactManager {
     private $db;
+    private $managerbdd;
     public function __construct() {
-        $dbName = "garage-parot";
-        $port = 3306;
-        $username = "neva";
-        $password = "neva";
+        $this->managerbdd = new BDDManager();
+        $dbName = $this->managerbdd->getdbName();
+        $port = $this->managerbdd->getPort();
+        $username = $this->managerbdd->getUserName();
+        $password = $this->managerbdd->getPassword();
+        $url = $this->managerbdd->getUrl();
         try{
-            $this->db = new PDO("mysql:localhost;dbname=$dbName;port=$port", $username, $password);
+            $this->db = new PDO("mysql:$url;dbname=$dbName;port=$port", $username, $password);
         } catch(PDOException $exception) {
-            echo " echec de la connexion a la base de donne",$exception->getMessage();
+            echo $exception->getMessage();
         }
     }
 
 public function create (Contact $contact){
-    $req = $this->db->prepare("INSERT INTO `garage-parot`.`contact` (name, surname, email, phone, message, date_creation) VALUE (:name, :surname, :email, :phone, :message, :date_creation)");
+    $req = $this->db->prepare("INSERT INTO `".$this->managerbdd->getdbName()."`.`contact` (name, surname, email, phone, message, date_creation) VALUE (:name, :surname, :email, :phone, :message, :date_creation)");
 
     $req->bindValue(":name", $contact->getName(), PDO::PARAM_STR);
     $req->bindValue(":surname", $contact->getSurname(), PDO::PARAM_STR);
@@ -36,7 +40,7 @@ public function create (Contact $contact){
 }
 public function getAll(){
     $contact = [];
-    $req = $this->db->query("SELECT * FROM `garage-parot` . `contact`");
+    $req = $this->db->query("SELECT * FROM `".$this->managerbdd->getdbName()."` . `contact`");
     $datas = $req->fetchAll();
     foreach ($datas as $data) {
         $contact = new Contact($data);
